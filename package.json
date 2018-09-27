@@ -2,7 +2,7 @@
   "name": "rencore-tenant-wide-spfx-extension-deployment",
   "displayName": "Rencore tenant-wide SPFx Extension deployment information",
   "description": "Easily add tenant-wide deployment information for your SPFx extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "RencoreGmbH",
   "icon": "assets/icon.png",
   "author": {

@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 const uuidv4 = require('uuid/v4');
 import { Solution, Feature } from '../model';
+import { TextDocument } from 'vscode';
 const stripJsonComments = require('strip-json-comments');
 
 export function addDeploymentInfo(fileUri: vscode.Uri): void {
@@ -34,13 +35,16 @@ export function addDeploymentInfo(fileUri: vscode.Uri): void {
 
   vscode.workspace
     .findFiles('config/package-solution.json', '**/node_modules/**', 1)
-    .then((files: vscode.Uri[]): Thenable<vscode.Uri[]> => {
+    .then((files: vscode.Uri[]): Thenable<TextDocument> => {
       if (files.length < 1) {
         return Promise.reject(`config/package-solution.json not found`);
       }
 
       packageSolutionUri = files[0];
-      packageSolutionDocument = vscode.workspace.textDocuments.find(d => d.uri.fsPath === packageSolutionUri.fsPath) as vscode.TextDocument;
+      return vscode.workspace.openTextDocument(packageSolutionUri);
+    })
+    .then((textDocument: vscode.TextDocument): Thenable<vscode.Uri[]> => {
+      packageSolutionDocument = textDocument;
 
       // check if tenant-wide deployment is enabled
       packageSolutionString = packageSolutionDocument.getText();
@@ -53,7 +57,7 @@ export function addDeploymentInfo(fileUri: vscode.Uri): void {
       }
       if (!packageSolution.solution ||
         !packageSolution.solution.skipFeatureDeployment) {
-        return Promise.reject(`Tenant-wide deployment is not enabled for this solution. Enable it in package-solution.json and try again.`);
+        return Promise.reject(`Tenant-wide deployment is not enabled for this solution. Enable it in package-solution.json by setting the 'skipFeatureDeployment' property to 'true' and try again.`);
       }
 
       const manifestString: string = fs.readFileSync(fileUri.fsPath, 'utf-8');
