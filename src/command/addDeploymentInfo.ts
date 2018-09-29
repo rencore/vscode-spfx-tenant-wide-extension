@@ -99,7 +99,11 @@ export function addDeploymentInfo(fileUri: vscode.Uri): void {
       // no information for the current component found
       // create ClientSiteComponentInstance
       const edit: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
-      const clientSideComponentInstanceXml: vscode.Uri = vscode.Uri.parse(`file://${path.join(workspaceFolderPath, 'sharepoint', 'assets', `${manifest.id}.xml`)}`);
+      // path on macOS begins with / so no need to add an extra slash, but it is
+      // required on Windows
+      let url: string = `file://${path.join(workspaceFolderPath.startsWith('/') ? workspaceFolderPath : `/${workspaceFolderPath}`, 'sharepoint', 'assets', `${manifest.id}.xml`)}`;
+      url = url.replace(/\\/g, '/');
+      const clientSideComponentInstanceXml: vscode.Uri = vscode.Uri.parse(url);
       edit.createFile(clientSideComponentInstanceXml, { overwrite: true });
       edit.insert(clientSideComponentInstanceXml, new vscode.Position(0, 0), `<?xml version="1.0" encoding="utf-8"?>
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
