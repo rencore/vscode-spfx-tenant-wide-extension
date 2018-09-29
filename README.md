@@ -22,6 +22,10 @@ Starting from SharePoint Framework v1.6.0, developers can choose to deploy Share
 
 ## Release Notes
 
+### 1.0.2
+
+Fixed bug in determining the file path of the XML file on Windows.
+
 ### 1.0.1
 
 Fixed bug when the manifest file to process isn't open in the editor.
